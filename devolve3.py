@@ -60,37 +60,24 @@ class Generation:
         parentDict = {}
         progenyDict = self.progenyDict
         for i in range(self.size):
-#            print(i)
-#            print('progeny dict: {}'.format(self.progenyDict))
             alreadyRelated = progenyDict[i]
-#            print("already related: {} \n **".format(alreadyRelated))
             idxs = np.where(parentArr == i)[0]
             if len(idxs) == 0:
-#                print('here1')
                 childrenID = [-1]
                 alreadyRelated = [-1]
                 newRelated = [-1]
-#                print(childrenID)
             elif len(idxs) == 1:
-#                print('here2')
                 childrenID = (idxs / 2).astype(np.int32)
-#                print(childrenID)
                 newRelated = np.append(alreadyRelated, childrenID)
             else:
-#                print('here3')
                 childrenID = (idxs / 2).astype(np.int32)
-#                print(childrenID)
                 newRelated = np.append(alreadyRelated, childrenID)
-#            print(alreadyRelated)
-            
-            # remove -1 <- tidy this
-            if newRelated[-1] == -1:
-                rewRelated = -1
-            
             # de-dupe
-            newRelated = list(set(newRelated))
-#            print(newRelated)
-            parentDict[i] = newRelated           
+            newRelated = np.array(list(set(newRelated)))
+            parentDict[i] = newRelated
+            if np.isin(-1, parentDict[i]):
+#                kill off individuals who have no surviving progeny
+                parentDict[i] = np.array([-1])
         return parentDict
     
     def getParentID(self):
@@ -119,16 +106,14 @@ class Generation:
             parentID.append(ID)
         return np.array(parentID)        
             
-            
-    
 
 def main():
-    N = 50
+    N = 10
     initDict = creatDict(N)
-    print(initDict)
+#    print(initDict)
     
     presentGen = Generation(initDict)
-    M = 100
+    M = 5
     backMGens = devolve(presentGen, M)
     print(backMGens.progenyDict)
     
