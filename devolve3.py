@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May  8 21:06:47 2019
-
-@author: YS15101711
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Created on Wed May  8 18:20:11 2019
 
 @author: YS15101711
 """
 
 from prime import isPrime, firstNPrimes
-from prime import timing, creatDict
+from prime import timing, createDict
+from visualize import cleanDict, plotSurvivors, barrenIdx
+
 import numpy as np
 
 def devolve(startingGen, numGen):
@@ -78,46 +73,26 @@ class Generation:
             if np.isin(-1, parentDict[i]):
 #                kill off individuals who have no surviving progeny
                 parentDict[i] = np.array([-1])
-        return parentDict
-    
-    def getParentID(self):
-        parentDict = self.getParentDict()
-        parentID = []
-        for k in parentDict.keys():
-            factors = parentDict[k]
-            if len(factors) == 1:
-                ID = factors[0]
-            else:
-                ID = 1
-                for f in factors:
-                    ID *= f
-            parentID.append(ID)
-        return np.array(parentID)
-    
-    def getParentFactors(self):
-        parentDict = self.getParentDict()
-        parentID = []
-        for k in parentDict.keys():
-            factors = parentDict[k]
-            if len(factors) == 1:
-                ID = factors[0]
-            else:
-                ID = factors
-            parentID.append(ID)
-        return np.array(parentID)        
+        return parentDict      
             
 
 def main():
-    N = 10
-    initDict = creatDict(N)
-#    print(initDict)
+    N = 6
+    initDict = createDict(N)
+    
     
     presentGen = Generation(initDict)
-    M = 5
+    M = 10
     backMGens = devolve(presentGen, M)
-    print(backMGens.progenyDict)
     
-main()
+    k, v = cleanDict(backMGens.progenyDict)
+    plotSurvivors(k, v)
+    
+    barren = barrenIdx(v)
+#    print(barren)
+
+if __name__ == '__main__':    
+    main()
 
 
 

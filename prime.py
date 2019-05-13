@@ -36,7 +36,7 @@ def firstNPrimes(n):
         i += 1
     return primes
 
-def creatDict(n):
+def createDict(n):
     result = {}
     for i in range(n): 
         result[i] = [i]
